@@ -36,9 +36,10 @@ import psutil
 
 ID = '/NODEINFO'
 
+
 class NodeInfo(object):
     nodes = dict()
-    
+
     def get_node_info(self, node_name, skip_cache=False):
         node_api = rosnode.get_api_uri(rospy.get_master(), node_name, skip_cache=skip_cache)
         try:
@@ -63,7 +64,8 @@ class NodeInfo(object):
         self.remove_dead_nodes()
         for node_name in rosnode.get_node_names():
             info = self.get_node_info(node_name)
-            if info is not False: infos.append((node_name, info))
+            if info is not False:
+                infos.append((node_name, info))
         return infos
 
     def get_all_node_fields(self, fields):
@@ -79,7 +81,7 @@ class NodeInfo(object):
             infos.append(self.as_dict(p, all_fields))
             infos[-1]['node_name'] = name
         return infos
-        
+
     def remove_dead_nodes(self):
         running_nodes = rosnode.get_node_names()
         dead_nodes = [node_name for node_name in self.nodes if node_name not in running_nodes]
