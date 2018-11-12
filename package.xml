@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>rqt_top</name>
   <version>0.4.8</version>
   <description>RQT plugin for monitoring ROS processes.</description>
@@ -12,16 +12,16 @@
   <url type="repository">https://github.com/ros-visualization/rqt_top</url>
   <url type="bugtracker">https://github.com/ros-visualization/rqt_top/issues</url>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <run_depend>python-psutil</run_depend>
-  <run_depend version_gte="0.2.19">python_qt_binding</run_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>rqt_gui</run_depend>
-  <run_depend>rqt_gui_py</run_depend>
+  <exec_depend>python3-psutil</exec_depend>
+  <exec_depend version_gte="0.2.19">python_qt_binding</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>rqt_gui</exec_depend>
+  <exec_depend>rqt_gui_py</exec_depend>
 
   <export>
-    <architecture_independent/>
     <rqt_gui plugin="${prefix}/plugin.xml"/>
+    <build_type>ament_cmake</build_type>
   </export>
 </package>
