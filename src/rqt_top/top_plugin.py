@@ -30,13 +30,17 @@ from __future__ import division
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
-from python_qt_binding.QtWidgets import QLabel, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QCheckBox, QWidget, QToolBar, QLineEdit, QPushButton
+from python_qt_binding.QtWidgets import QLabel, QTreeWidget, QTreeWidgetItem, QVBoxLayout, \
+    QCheckBox, QWidget, QToolBar, QLineEdit, QPushButton
 from python_qt_binding.QtCore import Qt, QTimer
 
+import rclpy
 from rqt_top.node_info import NodeInfo
 import re
 from threading import RLock
 import textwrap
+
+import inspect
 
 
 class TopWidgetItem(QTreeWidgetItem):
@@ -51,22 +55,24 @@ class TopWidgetItem(QTreeWidgetItem):
 
 
 class Top(Plugin):
-    NODE_FIELDS   = [             'pid', 'get_cpu_percent', 'get_memory_percent', 'get_num_threads']
-    OUT_FIELDS    = ['node_name', 'pid', 'cpu_percent',     'memory_percent',     'num_threads'    ]
-    FORMAT_STRS   = ['%s',        '%s',  '%0.2f',           '%0.2f',              '%s'             ]
-    NODE_LABELS   = ['Node',      'PID', 'CPU %',           'Mem %',              'Num Threads'    ]
-    SORT_TYPE     = [str,         str,   float,             float,                float            ]
-    TOOLTIPS = {
-        0: ('cmdline', lambda x: '\n'.join(textwrap.wrap(' '.join(x)))),
-        3: ('memory_info', lambda x: ('Resident: %0.2f MiB, Virtual: %0.2f MiB' % (x[0] / 2**20, x[1] / 2**20)))
-    }
-
-    _node_info = NodeInfo()
+    NODE_FIELDS   = []#          'pid', 'get_cpu_percent', 'get_memory_percent', 'get_num_threads']
+    OUT_FIELDS    = ['node_name',]  # 'pid', 'cpu_percent',     'memory_percent',     'num_threads'    ]
+    FORMAT_STRS   = ['%s',]#     '%s',  '%0.2f',           '%0.2f',              '%s'             ]
+    NODE_LABELS   = ['Node',]#   'PID', 'CPU %',           'Mem %',              'Num Threads'    ]
+    SORT_TYPE     = [str,]#      str,   float,             float,                float            ]
+    TOOLTIPS = {}
+    #    0: ('cmdline', lambda x: '\n'.join(textwrap.wrap(' '.join(x)))),
+    #    3: ('memory_info', lambda x: ('Resident: %0.2f MiB, Virtual: %0.2f MiB' % (x[0] / 2**20, x[1] / 2**20)))
+    # }
 
     name_filter = re.compile('')
 
     def __init__(self, context):
         super(Top, self).__init__(context)
+
+        self._node = context.node
+        self._node_info = NodeInfo(self._node)
+
         # Give QObjects reasonable names
         self.setObjectName('Top')
 
@@ -118,9 +124,10 @@ class Top(Plugin):
         context.add_widget(self._container)
 
         # Add a button for killing nodes
-        self._kill_button = QPushButton('Kill Node')
-        self._layout.addWidget(self._kill_button)
-        self._kill_button.clicked.connect(self._kill_node)
+        # TODO(brawner) Killing nodes not yet in rclpy
+        # self._kill_button = QPushButton('Kill Node')
+        # self._layout.addWidget(self._kill_button)
+        # self._kill_button.clicked.connect(self._kill_node)
 
         # Update twice since the first cpu% lookup will always return 0
         self.update_table()
@@ -158,11 +165,9 @@ class Top(Plugin):
 
         for col, (key, func) in self.TOOLTIPS.items():
             twi.setToolTip(col, func(info[key]))
-
         with self._selected_node_lock:
             if twi.text(0) == self._selected_node:
                 twi.setSelected(True)
-
         twi.setHidden(len(self.name_filter.findall(info['node_name'])) == 0)
 
     def update_table(self):
