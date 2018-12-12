@@ -2,6 +2,12 @@
 Changelog for package rqt_top
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Porting rqt_top to ROS2 (`#6 <https://github.com/ros-visualization/rqt_top/issues/6>`_)
+* autopep8 (`#5 <https://github.com/ros-visualization/rqt_top/issues/5>`_)
+* Contributors: Mike Lautman, brawner
+
 0.4.8 (2017-04-24)
 ------------------
 
