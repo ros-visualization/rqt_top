@@ -2,6 +2,12 @@
 Changelog for package rqt_top
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* use conditional dependencies for Python 3 (`#7 <https://github.com/ros-visualization/rqt_top/issues/7>`_)
+* bump CMake minimum version to avoid CMP0048 warning
+* autopep8 (`#5 <https://github.com/ros-visualization/rqt_top/issues/5>`_)
+
 0.4.8 (2017-04-24)
 ------------------
 
