@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # Copyright (c) 2013, Oregon State University
 # All rights reserved.
 
@@ -30,5 +29,11 @@ import sys
 
 from rqt_gui.main import Main
 
-main = Main()
-sys.exit(main.main(sys.argv, standalone='rqt_top.top_plugin.Top'))
+
+def main():
+    main = Main()
+    sys.exit(main.main(sys.argv, standalone='rqt_top.top_plugin.Top'))
+
+
+if __name__ == '__main__':
+    main()
