@@ -2,8 +2,8 @@
 Changelog for package rqt_top
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.10 (2021-04-21)
+-------------------
 * Merge pull request `#13 <https://github.com/ros-visualization/rqt_top/issues/13>`_ from ros-visualization/sloretz-update-maintainers
   Update maintainers in package.xml
 * Update maintainers in package.xml
