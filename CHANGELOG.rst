@@ -2,6 +2,14 @@
 Changelog for package rqt_top
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#13 <https://github.com/ros-visualization/rqt_top/issues/13>`_ from ros-visualization/sloretz-update-maintainers
+  Update maintainers in package.xml
+* Update maintainers in package.xml
+* fix shebang line for python3 (`#9 <https://github.com/ros-visualization/rqt_top/issues/9>`_)
+* Contributors: Michael Carroll, Mikael Arguedas, Shane Loretz
+
 0.4.9 (2020-03-17)
 ------------------
 * use conditional dependencies for Python 3 (`#7 <https://github.com/ros-visualization/rqt_top/issues/7>`_)
