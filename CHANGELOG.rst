@@ -2,8 +2,8 @@
 Changelog for package rqt_top
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.1 (2021-04-27)
+------------------
 * Changed the build type to ament_python and fixed package to run with ros2 run (`#8 <https://github.com/ros-visualization/rqt_top/issues/8>`_)
 * Contributors: Alejandro Hernández Cordero
 
