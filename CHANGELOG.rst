@@ -2,6 +2,11 @@
 Changelog for package rqt_top
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.2 (2021-08-31)
+------------------
+* Fix modern setuptools warning about dashes instead of underscores (`#14 <https://github.com/ros-visualization/rqt_top/issues/14>`_)
+* Contributors: Chris Lalancette
+
 1.0.1 (2021-04-27)
 ------------------
 * Changed the build type to ament_python and fixed package to run with ros2 run (`#8 <https://github.com/ros-visualization/rqt_top/issues/8>`_)
