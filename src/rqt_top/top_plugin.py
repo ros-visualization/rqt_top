@@ -53,7 +53,7 @@ class TopWidgetItem(QTreeWidgetItem):
 class Top(Plugin):
     NODE_FIELDS   = [             'pid', 'get_cpu_percent', 'get_memory_percent', 'get_num_threads']
     OUT_FIELDS    = ['node_name', 'pid', 'cpu_percent',     'memory_percent',     'num_threads'    ]
-    FORMAT_STRS   = ['%s',        '%s',  '%0.2f',           '%0.2f',              '%s'             ]
+    FORMAT_STRS   = ['%s',        '%s',  '%0.2f',           '%0.2f',              '%d'             ]
     NODE_LABELS   = ['Node',      'PID', 'CPU %',           'Mem %',              'Num Threads'    ]
     SORT_TYPE     = [str,         str,   float,             float,                float            ]
     TOOLTIPS = {
@@ -84,12 +84,14 @@ class Top(Plugin):
 
         self._selected_node = ''
         self._selected_node_lock = RLock()
+        self.filter_empty = True
 
         # Setup the toolbar
         self._toolbar = QToolBar()
         self._filter_box = QLineEdit()
         self._regex_box = QCheckBox()
         self._regex_box.setText('regex')
+        self._total_label = QLabel('Total usage: ')
         self._toolbar.addWidget(QLabel('Filter'))
         self._toolbar.addWidget(self._filter_box)
         self._toolbar.addWidget(self._regex_box)
@@ -104,6 +106,7 @@ class Top(Plugin):
         self._container.setLayout(self._layout)
 
         self._layout.addWidget(self._toolbar)
+        self._layout.addWidget(self._total_label)
 
         # Create the table widget
         self._table_widget = QTreeWidget()
@@ -144,6 +147,7 @@ class Top(Plugin):
         else:
             expr = re.escape(self._filter_box.text())
         self.name_filter = re.compile(expr)
+        self.filter_empty = expr == ''
         self.update_table()
 
     def _kill_node(self):
@@ -164,12 +168,49 @@ class Top(Plugin):
                 twi.setSelected(True)
 
         twi.setHidden(len(self.name_filter.findall(info['node_name'])) == 0)
+        
+    def update_total_usage(self, infos):
+        totals_out_fields = self.OUT_FIELDS[2:5]
+        totals_name_labels = self.NODE_LABELS[2:5]
+        totals_format_strs =  self.FORMAT_STRS[2:5]
+        
+        filtered_node_num = 0
+        totals = {}
+        totals_filtered = {}
+        for name in totals_name_labels:
+            totals[name] = 0.0
+            totals_filtered[name] = 0.0
+        
+        for nx, info in enumerate(infos): # Each node
+            for i, field in enumerate(totals_out_fields): # Each field
+                totals[totals_name_labels[i]] += info[field]
+                
+            if len(self.name_filter.findall(info['node_name'])) > 0:  # If not filtered
+                filtered_node_num += 1
+                for i, field in enumerate(totals_out_fields): # Each field
+                    totals_filtered[totals_name_labels[i]] += info[field]
+        
+        # Total
+        str = 'Total:      '
+        for i, key in enumerate(totals_name_labels):
+            str += ('%s: ' + totals_format_strs[i] + '|') % (key, totals[key])
+        str += 'Nodes: %s' % len(infos)
+        
+        # Filtered total
+        if self.filter_empty is False:
+            str += '\nFiltered: '
+            for i, key in enumerate(totals_name_labels):
+                str += ('%s: ' + totals_format_strs[i] + '|') % (key, totals_filtered[key])
+            str += 'Nodes: %s' % filtered_node_num
+        
+        self._total_label.setText(str)
 
     def update_table(self):
         self._table_widget.clear()
         infos = self._node_info.get_all_node_fields(self.NODE_FIELDS)
         for nx, info in enumerate(infos):
             self.update_one_item(nx, info)
+        self.update_total_usage(infos)
 
     def shutdown_plugin(self):
         self._update_timer.stop()
